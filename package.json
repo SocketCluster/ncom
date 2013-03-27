@@ -1,0 +1,34 @@
+{
+	"name": "ncom",
+	"description": "A TCP socket pair for easily transmitting full messages without worrying about packet size limits.",
+	"version": "0.9.0",
+	"author": {
+		"name": "JF Gros-Dubois",
+		"email": "flashthink@gmail.com"
+	},
+	"contributors": [{
+		"name": "JF Gros-Dubois",
+		"email": "flashthink@gmail.com"
+	}],
+	"dependencies": {},
+	"devDependencies": {},
+	"bundleDependencies": [
+		"json"
+	],
+	"keywords": [
+		"ncom",
+		"tcp",
+		"simple",
+		"socket",
+		"messages"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/topcloud/ncom.git"
+	},
+	"main": "index",
+	"engines": {
+		"node": ">= 0.8.0"
+	},
+	"optionalDependencies": {}
+}
