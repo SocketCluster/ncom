@@ -35,12 +35,12 @@ var ComSocket = function (options, id) {
 	self.socket.on('data', function(data) {
 		dataBuffer += data.toString();
 		var messages = dataBuffer.split(endSymbol);
-		var i;
 		var num = messages.length - 1;
-		for (i=0; i<num; i++) {
+		dataBuffer = messages[num];
+		
+		for (var i=0; i<num; i++) {
 			self.socket.emit('message', formatter.parse(messages[i]));
-		}
-		dataBuffer = messages[num];				
+		}			
 	});
 	
 	self.socket.on('connect', function () {
