@@ -159,25 +159,6 @@ var ComServer = function (options) {
 
 ComServer.prototype = Object.create(EventEmitter.prototype);
 
-var connect = function (options, callback) {
-	var engine = options.secure ? tls : net;
-	
-	var comSocket;
-	var socket = engine.connect(options, function () {
-		if (comSocket) {
-			comSocket.authorized = socket.authorized;
-		} else {
-			comSocket = new ComSocket(socket);
-		}
-		callback && callback(comSocket);
-	});
-	
-	if (!comSocket) {
-		comSocket = new ComSocket(socket);
-	}
-	return comSocket;
-};
-
 var createServer = function () {
 	var options, listener;
 	if (arguments[1]) {
