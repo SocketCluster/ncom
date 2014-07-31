@@ -32,7 +32,7 @@ var ComSocket = function (options, id) {
 		self.socket.connect.apply(self.socket, arguments);
 	};
 	
-	self.socket.on('data', function(data) {
+	self.socket.on('data', function (data) {
 		dataBuffer += data.toString();
 		var messages = dataBuffer.split(endSymbol);
 		var num = messages.length - 1;
@@ -52,7 +52,11 @@ var ComSocket = function (options, id) {
 	});
 	
 	self.on = function (event, callback) {
-		self.socket.on(event, callback);
+		if (event == 'error') {
+			EventEmitter.prototype.on.call(self, event, callback);
+		} else {
+			self.socket.on(event, callback);
+		}
 	};
 	
 	self.listeners = function () {
@@ -121,7 +125,7 @@ var ComServer = function (options) {
 		server.listen.apply(server, arguments);
 	};
 	
-	server.on('connection', function(socket) {
+	server.on('connection', function (socket) {
 		var tempBuffer = [];
 		var bufferData = function (data) {
 			tempBuffer.push(data.toString());
@@ -139,7 +143,7 @@ var ComServer = function (options) {
 	});
 	
 	self.on = function (event, callback) {
-		if (event == 'connection') {
+		if (event == 'connection' || event == 'error') {
 			EventEmitter.prototype.on.call(self, event, callback);
 		} else {
 			server.on(event, callback);
