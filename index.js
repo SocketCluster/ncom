@@ -159,6 +159,10 @@ var ComServer = function (options) {
     EventEmitter.prototype.removeAllListeners.apply(self, arguments);
     server.removeAllListeners.apply(server, arguments);
   };
+  
+  self.close = function (callback) {
+    server.close(callback);
+  };
 };
 
 ComServer.prototype = Object.create(EventEmitter.prototype);
