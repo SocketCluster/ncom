@@ -86,6 +86,11 @@ var ComSocket = function (options, id) {
     self.socket.end();
     self._errorDomain.remove(self.socket);
   };
+  
+  self.destroy = function () {
+    self.socket.destroy();
+    self._errorDomain.remove(self.socket);
+  };
 };
 
 ComSocket.prototype = Object.create(EventEmitter.prototype);
