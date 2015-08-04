@@ -74,8 +74,8 @@ var ComSocket = function (options, id) {
   self.write = function (data, filters) {
     var str = formatter.stringify(data).replace(endSymbolRegex, '');
     if (filters) {
-      var i;
-      for (i in filters) {
+      var len = filters.length;
+      for (var i = 0; i < len; i++) {
         str = filters[i](str);
       }
     }
@@ -141,7 +141,8 @@ var ComServer = function (options) {
       var comSocket = new ComSocket(socket, id);
       comSocket.connected = true;
       self.emit('connection', comSocket);
-      for (var i in tempBuffer) {
+      var len = tempBuffer.length;
+      for (var i = 0; i < len; i++) {
         socket.emit('data', tempBuffer[i]);
       }
     });
