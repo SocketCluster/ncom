@@ -1,7 +1,7 @@
 {
   "name": "ncom",
   "description": "A TCP socket pair for easily transmitting full messages without worrying about packet size limits.",
-  "version": "0.9.8",
+  "version": "0.9.9",
   "author": {
     "name": "JF Gros-Dubois",
     "email": "flashthink@gmail.com"
@@ -12,7 +12,9 @@
       "email": "flashthink@gmail.com"
     }
   ],
-  "dependencies": {},
+  "dependencies": {
+    "sc-formatter": "1.0.x"
+  },
   "devDependencies": {},
   "keywords": [
     "ncom",

@@ -1,7 +1,7 @@
 var net = require('net');
 var tls = require('tls');
 var crypto = require('crypto');
-var formatter = require('./formatter');
+var formatter = require('sc-formatter');
 var EventEmitter = require('events').EventEmitter;
 var domain = require('domain');
 
