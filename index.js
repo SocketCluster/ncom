@@ -72,14 +72,23 @@ var ComSocket = function (options, id) {
   };
 
   self.write = function (data, filters) {
-    var str = formatter.stringify(data).replace(endSymbolRegex, '');
-    if (filters) {
-      var len = filters.length;
-      for (var i = 0; i < len; i++) {
-        str = filters[i](str);
-      }
+    var str, formatError;
+    
+    try {
+      str = formatter.stringify(data).replace(endSymbolRegex, '');
+    } catch (err) {
+      formatError = err;
+      self._errorDomain.emit('error', formatError);
     }
-    self.socket.write(str + endSymbol);
+    if (!formatError) {
+      if (filters) {
+        var len = filters.length;
+        for (var i = 0; i < len; i++) {
+          str = filters[i](str);
+        }
+      }
+      self.socket.write(str + endSymbol);
+    }
   };
 
   self.end = function () {
