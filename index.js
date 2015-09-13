@@ -73,7 +73,7 @@ var ComSocket = function (options, id) {
 
   self.write = function (data, filters) {
     var str, formatError;
-    
+
     try {
       str = formatter.stringify(data).replace(endSymbolRegex, '');
     } catch (err) {
