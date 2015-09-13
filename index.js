@@ -11,46 +11,46 @@ var ComSocket = function (options, id) {
   self._errorDomain.on('error', function (err) {
     self.emit('error', err);
   });
-  
+
   var dataBuffer = '';
   var endSymbol = '\u0017';
   var endSymbolRegex = new RegExp(endSymbol, 'g');
-  
+
   self.id = id;
   self.connected = false;
-  
+
   if (options instanceof net.Socket) {
     self.socket = options;
     self.authorized = options.authorized;
   } else {
     self.socket = new net.Socket(options);
   }
-  
+
   self._errorDomain.add(self.socket);
-  
+
   self.connect = function () {
     self.socket.connect.apply(self.socket, arguments);
   };
-  
+
   self.socket.on('data', function (data) {
     dataBuffer += data.toString();
     var messages = dataBuffer.split(endSymbol);
     var num = messages.length - 1;
     dataBuffer = messages[num];
-    
+
     for (var i=0; i<num; i++) {
       self.socket.emit('message', formatter.parse(messages[i]));
-    }      
+    }
   });
-  
+
   self.socket.on('connect', function () {
     self.connected = true;
   });
-  
+
   self.socket.on('close', function () {
     self.connected = false;
   });
-  
+
   self.on = function (event, callback) {
     if (event == 'error') {
       EventEmitter.prototype.on.call(self, event, callback);
@@ -58,19 +58,19 @@ var ComSocket = function (options, id) {
       self.socket.on(event, callback);
     }
   };
-  
+
   self.listeners = function () {
     self.socket.listeners.apply(self.socket, arguments);
   };
-  
+
   self.removeListener = function () {
     self.socket.removeListener.apply(self.socket, arguments);
   };
-  
+
   self.removeAllListeners = function () {
     self.socket.removeAllListeners.apply(self.socket, arguments);
   };
-  
+
   self.write = function (data, filters) {
     var str = formatter.stringify(data).replace(endSymbolRegex, '');
     if (filters) {
@@ -81,12 +81,12 @@ var ComSocket = function (options, id) {
     }
     self.socket.write(str + endSymbol);
   };
-  
+
   self.end = function () {
     self.socket.end();
     self._errorDomain.remove(self.socket);
   };
-  
+
   self.destroy = function () {
     self.socket.destroy();
     self._errorDomain.remove(self.socket);
@@ -97,13 +97,13 @@ ComSocket.prototype = Object.create(EventEmitter.prototype);
 
 var ComServer = function (options) {
   var self = this;
-  
+
   self._errorDomain = domain.create();
   self._errorDomain.on('error', function (err) {
     self.emit('error', err);
   });
   self._options = options || {};
-  
+
   var server;
 
   if (self._options.secure) {
@@ -112,9 +112,9 @@ var ComServer = function (options) {
     server = net.createServer(options);
   }
   self._errorDomain.add(server);
-  
+
   var idTrailer = 0;
-  
+
   var generateId = function (callback) {
     return crypto.randomBytes(32, function (err, buffer) {
       if (err) {
@@ -125,11 +125,11 @@ var ComServer = function (options) {
       }
     });
   };
-  
+
   self.listen = function () {
     server.listen.apply(server, arguments);
   };
-  
+
   server.on('connection', function (socket) {
     var tempBuffer = [];
     var bufferData = function (data) {
@@ -147,7 +147,7 @@ var ComServer = function (options) {
       }
     });
   });
-  
+
   self.on = function (event, callback) {
     if (event == 'connection' || event == 'error') {
       EventEmitter.prototype.on.call(self, event, callback);
@@ -155,17 +155,17 @@ var ComServer = function (options) {
       server.on(event, callback);
     }
   };
-  
+
   self.removeListener = function () {
     EventEmitter.prototype.removeListener.apply(self, arguments);
     server.removeListener.apply(server, arguments);
   };
-  
+
   self.removeAllListeners = function () {
     EventEmitter.prototype.removeAllListeners.apply(self, arguments);
     server.removeAllListeners.apply(server, arguments);
   };
-  
+
   self.close = function (callback) {
     server.close(callback);
   };
@@ -183,7 +183,7 @@ var createServer = function () {
   } else {
     options = arguments[0];
   }
-  
+
   var server = new ComServer(options);
   if (listener) {
     server.on('connection', listener);
