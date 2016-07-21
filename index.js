@@ -3,7 +3,7 @@ var tls = require('tls');
 var crypto = require('crypto');
 var formatter = require('sc-formatter');
 var EventEmitter = require('events').EventEmitter;
-var domain = require('domain');
+var domain = require('sc-domain');
 
 var ComSocket = function (options, id) {
   var self = this;
