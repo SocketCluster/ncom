@@ -39,7 +39,7 @@ var ComSocket = function (options, id) {
     dataBuffer = messages[num];
 
     for (var i=0; i<num; i++) {
-      self.socket.emit('message', formatter.parse(messages[i]));
+      self.socket.emit('message', formatter.decode(messages[i]));
     }
   });
 
@@ -75,7 +75,7 @@ var ComSocket = function (options, id) {
     var str, formatError;
 
     try {
-      str = formatter.stringify(data).replace(endSymbolRegex, '');
+      str = formatter.encode(data).replace(endSymbolRegex, '');
     } catch (err) {
       formatError = err;
       self._errorDomain.emit('error', formatError);
