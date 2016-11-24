@@ -12,12 +12,15 @@ var ComSocket = function (options, id) {
     self.emit('error', err);
   });
 
-  var dataBuffer = '';
+  var dataInboundBuffer = '';
+  var dataOutboundBuffer = '';
   var endSymbol = '\u0017';
   var endSymbolRegex = new RegExp(endSymbol, 'g');
+  var flushOutTimeout = null;
 
   self.id = id;
   self.connected = false;
+  self.batchDuration = 5; // 5 milliseconds
 
   if (options instanceof net.Socket) {
     self.socket = options;
@@ -33,10 +36,10 @@ var ComSocket = function (options, id) {
   };
 
   self.socket.on('data', function (data) {
-    dataBuffer += data.toString();
-    var messages = dataBuffer.split(endSymbol);
+    dataInboundBuffer += data.toString();
+    var messages = dataInboundBuffer.split(endSymbol);
     var num = messages.length - 1;
-    dataBuffer = messages[num];
+    dataInboundBuffer = messages[num];
 
     for (var i=0; i<num; i++) {
       self.socket.emit('message', formatter.decode(messages[i]));
@@ -71,8 +74,17 @@ var ComSocket = function (options, id) {
     self.socket.removeAllListeners.apply(self.socket, arguments);
   };
 
-  self.write = function (data, filters) {
+  self._flushOutboundBuffer = function () {
+    self.socket.write(dataOutboundBuffer);
+    dataOutboundBuffer = '';
+    flushOutTimeout = null;
+  };
+
+  self.write = function (data, writeOptions) {
     var str, formatError;
+    writeOptions = writeOptions || {};
+
+    var filters = writeOptions.filters;
 
     try {
       str = formatter.encode(data).replace(endSymbolRegex, '');
@@ -87,7 +99,14 @@ var ComSocket = function (options, id) {
           str = filters[i](str);
         }
       }
-      self.socket.write(str + endSymbol);
+      if (writeOptions.batch) {
+        dataOutboundBuffer += str + endSymbol;
+        if (!flushOutTimeout) {
+          flushOutTimeout = setTimeout(self._flushOutboundBuffer, self.batchDuration);
+        }
+      } else {
+        self.socket.write(str + endSymbol);
+      }
     }
   };
 
