@@ -29,7 +29,9 @@ var ComSocket = function (options, id) {
     self.socket = new net.Socket(options);
   }
 
-  self._errorDomain.add(self.socket);
+  self.socket.on('error', function (err) {
+    self._errorDomain.emit('error', err);
+  });
 
   self.connect = function () {
     self.socket.connect.apply(self.socket, arguments);
@@ -112,12 +114,10 @@ var ComSocket = function (options, id) {
 
   self.end = function () {
     self.socket.end();
-    self._errorDomain.remove(self.socket);
   };
 
   self.destroy = function () {
     self.socket.destroy();
-    self._errorDomain.remove(self.socket);
   };
 };
 
@@ -139,7 +139,9 @@ var ComServer = function (options) {
   } else {
     server = net.createServer(options);
   }
-  self._errorDomain.add(server);
+  server.on('error', function (err) {
+    self._errorDomain.emit('error', err);
+  });
 
   var idTrailer = 0;
 
