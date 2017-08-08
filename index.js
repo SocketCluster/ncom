@@ -3,14 +3,9 @@ var tls = require('tls');
 var crypto = require('crypto');
 var formatter = require('sc-formatter');
 var EventEmitter = require('events').EventEmitter;
-var domain = require('sc-domain');
 
 var ComSocket = function (options, id) {
   var self = this;
-  self._errorDomain = domain.create();
-  self._errorDomain.on('error', function (err) {
-    self.emit('error', err);
-  });
 
   var dataInboundBuffer = '';
   var dataOutboundBuffer = '';
@@ -30,7 +25,7 @@ var ComSocket = function (options, id) {
   }
 
   self.socket.on('error', function (err) {
-    self._errorDomain.emit('error', err);
+    self.emit('error', err);
   });
 
   self.connect = function () {
@@ -92,7 +87,7 @@ var ComSocket = function (options, id) {
       str = formatter.encode(data).replace(endSymbolRegex, '');
     } catch (err) {
       formatError = err;
-      self._errorDomain.emit('error', formatError);
+      self.emit('error', formatError);
     }
     if (!formatError) {
       if (filters) {
@@ -126,10 +121,6 @@ ComSocket.prototype = Object.create(EventEmitter.prototype);
 var ComServer = function (options) {
   var self = this;
 
-  self._errorDomain = domain.create();
-  self._errorDomain.on('error', function (err) {
-    self.emit('error', err);
-  });
   self._options = options || {};
 
   var server;
@@ -140,7 +131,7 @@ var ComServer = function (options) {
     server = net.createServer(options);
   }
   server.on('error', function (err) {
-    self._errorDomain.emit('error', err);
+    self.emit('error', err);
   });
 
   var idTrailer = 0;

@@ -13,8 +13,7 @@
     }
   ],
   "dependencies": {
-    "sc-domain": "1.x.x",
-    "sc-formatter": "3.0.x"
+    "sc-formatter": "~3.0.0"
   },
   "devDependencies": {},
   "keywords": [
