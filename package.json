@@ -13,7 +13,7 @@
     }
   ],
   "dependencies": {
-    "sc-formatter": "~3.0.0"
+    "sc-formatter": "~3.0.1"
   },
   "devDependencies": {},
   "keywords": [
