@@ -52,7 +52,7 @@ var ComSocket = function (options, id) {
   });
 
   self.on = function (event, callback) {
-    if (event == 'error') {
+    if (event === 'error') {
       EventEmitter.prototype.on.call(self, event, callback);
     } else {
       self.socket.on(event, callback);
@@ -170,7 +170,7 @@ var ComServer = function (options) {
   });
 
   self.on = function (event, callback) {
-    if (event == 'connection' || event == 'error') {
+    if (event === 'connection' || event === 'error') {
       EventEmitter.prototype.on.call(self, event, callback);
     } else {
       server.on(event, callback);
