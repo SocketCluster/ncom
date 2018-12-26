@@ -60,15 +60,15 @@ var ComSocket = function (options, id) {
   };
 
   self.listeners = function () {
-    self.socket.listeners.apply(self.socket, arguments);
+    return self.socket.listeners.apply(self.socket, arguments);
   };
 
   self.removeListener = function () {
-    self.socket.removeListener.apply(self.socket, arguments);
+    return self.socket.removeListener.apply(self.socket, arguments);
   };
 
   self.removeAllListeners = function () {
-    self.socket.removeAllListeners.apply(self.socket, arguments);
+    return self.socket.removeAllListeners.apply(self.socket, arguments);
   };
 
   self._flushOutboundBuffer = function () {
