@@ -5,6 +5,7 @@ var formatter = require('sc-formatter');
 var EventEmitter = require('events').EventEmitter;
 
 var ComSocket = function (options, id) {
+  EventEmitter.call(this);
   var self = this;
 
   var dataInboundBuffer = '';
